@@ -7,17 +7,18 @@
 	checking some anotations.
 	analytics after a run or during a run.
 	
-	with the new update:
+	# project got on hiatus for 3 months the updates are outdated
+	with the old new update:
 	update api - all done - i think
 	new currency - dust
 	automation of buying radius booster with dust
 	legendary boost satchel - 
 	epic boost satchel - 
 
-	Sapphire Chest - Common
-	Tourmaline - Legendary
-	Emerald - rare
-	Amethyst - Epic
+	Common Chest - Sapphire Chest - Common
+	Earth Chest - Tourmaline - Legendary
+	Wind Chest - Emerald - rare
+	Fire Chest - Amethyst - Epic
 """
 
 import requests	
@@ -43,13 +44,13 @@ class Credentials:
 	longitude = -118.49719975143671
 	app_version = "3.1.14"
 	buy_common = 1
-	buy_legendary = 1
-	buy_epics = 1
-	buy_rare = 0
+	buy_earth = 1
+	buy_fire = 1
+	buy_wind = 1
 	#boosts chests when trying to open
 	boost_rare = 1
 	boost_epic = 1
-	boost_legendary = 0
+	boost_legendary = 1
 
 
 """next account test
@@ -102,7 +103,7 @@ def Stats_signal(signum, stack):
 	print("XP needed: "+ str(myStats.xp_required) + "\t\t|\t Current Dust " + str(myInv.dust))
 	print("\nFragments:\n")
 	for ele in myInv.fragments:
-		print(ele[1] +" - " + str(ele[0]))
+		print(ele[1] +" - " + str(ele[0]))				
 	print("-------------------------------------------------------------------------------")
 
 def main():
@@ -322,6 +323,7 @@ def search_chests(latitude_local , longitude_local):
 		exit(1)
 
 	for chest in r.json():
+		#print(chest['type']['name'])
 		if((chest['type']['name'] == "Sapphire Chest" or chest['type']['name'] == "Common Chest") and Credentials.buy_common == 1):
 			common_counter = 1
 			chest_content(chest['id'],chest['location']['latitude'],chest['location']['longitude'], "Common Chest")
@@ -331,25 +333,25 @@ def search_chests(latitude_local , longitude_local):
 			Credentials.latitude = chest['location']['latitude']
 			Credentials.longitude = chest['location']['longitude']
 			time.sleep(random.uniform(4,6))
-		elif(chest['type']['name'] == "Tourmaline Chest" and Credentials.buy_legendary == 1 and myInv.keys > 3):
+		elif(chest['type']['name'] == "Earth Chest" and Credentials.buy_earth == 1 and myInv.keys > 3):
 			common_counter = 1
-			chest_content(chest['id'],chest['location']['latitude'],chest['location']['longitude'] , "Tourmaline Chest")
+			chest_content(chest['id'],chest['location']['latitude'],chest['location']['longitude'] , "Earth Chest")
 			load_inv()
 			load_stats()
 			Credentials.latitude = chest['location']['latitude']
 			Credentials.longitude = chest['location']['longitude']
 			time.sleep(random.uniform(4,6))
-		elif(chest['type']['name'] == "Amethyst Chest" and Credentials.buy_epics == 1 and myInv.keys > 3):
+		elif(chest['type']['name'] == "Fire Chest" and Credentials.buy_fire == 1 and myInv.keys > 3):
 			common_counter = 1
-			chest_content(chest['id'],chest['location']['latitude'],chest['location']['longitude'] , "Amethyst Chest")
+			chest_content(chest['id'],chest['location']['latitude'],chest['location']['longitude'] , "Fire Chest")
 			load_inv()
 			load_stats()
 			Credentials.latitude = chest['location']['latitude']
 			Credentials.longitude = chest['location']['longitude']
 			time.sleep(random.uniform(4,6))
-		elif(chest['type']['name'] == "Emerald Chest" and Credentials.buy_rare == 1 and myInv.keys > 3):
+		elif(chest['type']['name'] == "Wind Chest" and Credentials.buy_wind == 1 and myInv.keys > 3):
 			common_counter = 1
-			chest_content(chest['id'],chest['location']['latitude'],chest['location']['longitude'] , "Emerald Chest")
+			chest_content(chest['id'],chest['location']['latitude'],chest['location']['longitude'] , "Wind Chest")
 			load_inv()
 			load_stats()
 			Credentials.latitude = chest['location']['latitude']
@@ -377,11 +379,11 @@ def chest_content(chestId , c_latitude , c_longitude , type):
 	for frag in myInv.fragments:
 		if "Common" in frag[1] and type == "Common Chest":
 			double_chest(chestId, c_latitude ,c_longitude, type)
-		if "Premium Booster" in frag[1] and type == "Tourmaline Chest" and Credentials.boost_legendary == 1:
+		if "Premium Booster" in frag[1] and type == "Earth Chest" and Credentials.boost_legendary == 1:
 			double_chest(chestId, c_latitude ,c_longitude, type)
-		if "Premium Booster" in frag[1] and type == "Amethyst Chest" and Credentials.boost_epic == 1:
+		if "Premium Booster" in frag[1] and type == "Fire Chest" and Credentials.boost_epic == 1:
 			double_chest(chestId, c_latitude ,c_longitude, type)
-		if "Premium Booster" in frag[1] and type == "Emerald Chest" and Credentials.boost_rare == 1:
+		if "Premium Booster" in frag[1] and type == "Wind Chest" and Credentials.boost_rare == 1:
 			double_chest(chestId, c_latitude ,c_longitude, type)
 
 	save_reward_chest(r.json(),type)
